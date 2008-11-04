@@ -15,9 +15,9 @@ class sfTaskExtraPluginConfiguration extends sfPluginConfiguration
    */
   public function configure()
   {
-    $this->dispatcher->connect('command.filter_options', array($this, 'filterCommandOptions'));
-    $this->dispatcher->connect('command.pre_command', array($this, 'listenForPreCommand'));
-    $this->dispatcher->connect('command.post_command', array($this, 'listenForPostCommand'));
+    // $this->dispatcher->connect('command.filter_options', array($this, 'filterCommandOptions'));
+    // $this->dispatcher->connect('command.pre_command', array($this, 'listenForPreCommand'));
+    // $this->dispatcher->connect('command.post_command', array($this, 'listenForPostCommand'));
   }
 
   /**
@@ -49,21 +49,20 @@ class sfTaskExtraPluginConfiguration extends sfPluginConfiguration
     $arguments = $event['arguments'];
     $options = $event['options'];
 
-    if ($task instanceof sfGenerateModuleTask && 'Plugin' == substr($arguments['application'], -6))
-    {
-      $addon = new sfGenerateModuleAddon($this->dispatcher, new sfAnsiColorFormatter());
-      $addon->setWrappedTask($task);
-      $ret = $addon->executeAddon($arguments, $options);
-
-      $event->setReturnValue($ret);
-      return true;
-    }
-
     return false;
   }
 
+  /**
+   * Listens for the 'command.post_command' event.
+   * 
+   * @param   sfEvent $event
+   * 
+   * @return  boolean
+   */
   public function listenForPostCommand(sfEvent $event)
   {
     $task = $event->getSubject();
+
+    return false;
   }
 }

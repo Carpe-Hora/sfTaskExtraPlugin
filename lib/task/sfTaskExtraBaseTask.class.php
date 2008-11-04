@@ -17,7 +17,7 @@ abstract class sfTaskExtraBaseTask extends sfBaseTask
    * 
    * @throws  sfException If the plugin does not exist
    */
-  public function checkPluginExists($plugin)
+  static public function checkPluginExists($plugin)
   {
     if (!is_dir(sfConfig::get('sf_plugins_dir').'/'.$plugin))
     {
