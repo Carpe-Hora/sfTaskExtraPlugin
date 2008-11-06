@@ -11,20 +11,25 @@ function task_extra_cleanup()
 task_extra_cleanup();
 register_shutdown_function('task_extra_cleanup');
 
-$t = new task_extra_lime_test(20, new lime_output_color());
+$t = new task_extra_lime_test(28, new lime_output_color());
 
 $t->diag('sfGeneratePluginTask');
 $t->task_ok('sfGeneratePluginTask', array('sfTest*Plugin'), array(), false, '"sfGeneratePluginTask" fails when plugin name includes bad characters');
 $t->task_ok('sfGeneratePluginTask', array('sfTest'), array(), false, '"sfGeneratePluginTask" fails when plugin name ends other than "Plugin"');
 $t->task_ok('sfGeneratePluginTask', array('sfTestPlugin'));
 
-$plugin_dir  = sfConfig::get('sf_plugins_dir').'/sfTestPlugin';
-$config_file = $plugin_dir.'/config/sfTestPluginConfiguration.class.php';
+$plugin_dir   = sfConfig::get('sf_plugins_dir').'/sfTestPlugin';
+$config_file  = $plugin_dir.'/config/sfTestPluginConfiguration.class.php';
+$test_project = $plugin_dir.'/test/fixtures/project';
+$test_app     = $test_project.'/apps/frontend';
 
 $t->ok(is_dir($plugin_dir), '"sfGeneratePluginTask" creates the plugin directory');
 $t->ok(file_exists($config_file), '"sfGeneratePluginTask" creates a plugin configuration file');
 $t->like(@file_get_contents($config_file), '/class sfTestPluginConfiguration extends sfPluginConfiguration/', '"sfGeneratePluginTask" creates the plugin configuration class');
 $t->like(@file_get_contents($plugin_dir.'/test/bootstrap/unit.php'), '/new sfTestPluginConfiguration/', '"sfGeneratePluginTask" includes the plugin config in the unit test bootstrapper');
+$t->ok(file_exists($test_project.'/config/ProjectConfiguration.class.php'), '"sfGeneratePluginTask" creates a test project');
+$t->like(@file_get_contents($test_project.'/config/ProjectConfiguration.class.php'), '/sfTestPlugin/', '"sfGeneratePluginTask" includes a customized ProjectConfiguration');
+$t->ok(file_exists($test_app.'/config/frontendConfiguration.class.php'), '"sfGeneratePluginTask" creates a test app');
 
 $t->task_ok('sfGeneratePluginTask', array('sfTestPlugin'), array(), false, '"sfGeneratePluginTask" fails if plugin already exists');
 
@@ -43,8 +48,15 @@ $t->like(@file_get_contents($actions_file), '/class exampleActions extends Basee
 $t->ok(file_exists($base_actions_file), '"sfGeneratePluginModuleTask" creates a base actions file');
 $t->like(@file_get_contents($base_actions_file), '/class BaseexampleActions extends sfActions/', '"sfGeneratePluginModuleTask" creates a base actions class');
 $t->ok(file_exists($plugin_dir.'/test/functional/exampleActionsTest.php'), '"sfGeneratePluginModuleTask" creates a functional test file');
+$t->like(@file_get_contents($test_project.'/config/settings.yml'), '/\bexample\b/', '"sfGeneratePluginModuleTask" enabled module in test project');
 
 $t->diag('sfGeneratePluginTask --module option');
 $t->task_ok('sfGeneratePluginTask', array('sfTestAgainPlugin'), array('--module=one', '--module=two'));
 $t->ok(is_dir(sfConfig::get('sf_plugins_dir').'/sfTestAgainPlugin/modules/one'), '"sfGeneratePluginTask" creates modules when "--module" is used');
 $t->ok(is_dir(sfConfig::get('sf_plugins_dir').'/sfTestAgainPlugin/modules/two'), '"sfGeneratePluginTask" creates modules when "--module" is used');
+$t->like(@file_get_contents(sfConfig::get('sf_plugins_dir').'/sfTestAgainPlugin/test/fixtures/project/config/settings.yml'), '/\bone\b/', '"sfGeneratePluginTask" enables modules when "--module" is used');
+$t->like(@file_get_contents(sfConfig::get('sf_plugins_dir').'/sfTestAgainPlugin/test/fixtures/project/config/settings.yml'), '/\btwo\b/', '"sfGeneratePluginTask" enables modules when "--module" is used');
+
+$t->diag('sfGeneratePluginTask --skip-test-dir option');
+$t->task_ok('sfGeneratePluginTask', array('sfTestYetAgainPlugin'), array('--skip-test-dir', '--module=another'));
+$t->ok(!is_dir(sfConfig::get('sf_plugins_dir').'/sfTestYetAgainPlugin/test'), '"sfGeneratePluginTask" does not generate a test directory when "--skip-test-dir" is used');

@@ -1,13 +1,13 @@
 <?php
 
-if (!isset($app))
-{
-  throw new LogicException('Could not determine symfony application.');
-}
-
 if (!isset($_SERVER['SYMFONY']))
 {
   throw new RuntimeException('Could not find symfony core libraries.');
+}
+
+if (!isset($app))
+{
+  $app = '##APP_NAME##';
 }
 
 require_once $_SERVER['SYMFONY'].'/autoload/sfCoreAutoload.class.php';

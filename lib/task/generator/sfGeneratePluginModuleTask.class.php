@@ -93,8 +93,28 @@ EOF;
     $finder = sfFinder::type('file')->name('*.php', '*.yml');
     $this->getFilesystem()->replaceTokens($finder->in($moduleDir), '##', '##', $constants);
 
-    // create functional test
-    $this->getFilesystem()->copy($skeletonDir.'/test/actionsTest.php', $testDir.'/functional/'.$module.'ActionsTest.php');
-    $this->getFilesystem()->replaceTokens($testDir.'/functional/'.$module.'ActionsTest.php', '##', '##', $constants);
+    if (file_exists($testDir.'/fixtures/project/symfony'))
+    {
+      // create functional test
+      $this->getFilesystem()->copy($skeletonDir.'/test/actionsTest.php', $testDir.'/functional/'.$module.'ActionsTest.php');
+      $this->getFilesystem()->replaceTokens($testDir.'/functional/'.$module.'ActionsTest.php', '##', '##', $constants);
+
+      // enable module in test project
+      $file = $pluginDir.'/test/fixtures/project/config/settings.yml';
+      $config = file_exists($file) ? sfYaml::load($file) : array();
+
+      if (!isset($config['all']))
+      {
+        $config['all'] = array();
+      }
+      if (!isset($config['all']['enabled_modules']))
+      {
+        $config['all']['enabled_modules'] = array();
+      }
+      $config['all']['enabled_modules'][] = $module;
+
+      $this->getFilesystem()->touch($file);
+      file_put_contents($file, sfYaml::dump($config, 2));
+    }
   }
 }
