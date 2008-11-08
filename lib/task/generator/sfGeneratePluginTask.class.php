@@ -21,8 +21,8 @@ class sfGeneratePluginTask extends sfTaskExtraGeneratorBaseTask
 
     $this->addOptions(array(
       new sfCommandOption('module', null, sfCommandOption::PARAMETER_REQUIRED | sfCommandOption::IS_ARRAY, 'Add a module'),
-      new sfCommandOption('skip-test-dir', null, sfCommandOption::PARAMETER_NONE, 'Skip generation of the plugin test directory'),
       new sfCommandOption('test-application', null, sfCommandOption::PARAMETER_REQUIRED, 'A name for the initial test application', 'frontend'),
+      new sfCommandOption('skip-test-dir', null, sfCommandOption::PARAMETER_NONE, 'Skip generation of the plugin test directory'),
     ));
 
     $this->namespace = 'generate';
@@ -47,7 +47,14 @@ plugin using the [--module|COMMENT] option:
 This task automatically generates all the necessary files for writing unit and
 functional tests for your plugin, including an embedded symfony project and
 application in [/test/fixtures/project|COMMENT]. You can customized the name
-used
+used with the [--test-application|COMMENT] option:
+
+  [./symfony generate:plugin sfExamplePlugin --test-application=backend|INFO]
+
+Use the [--skip-test-dir|COMMENT] to skip generation of the plugin [/test|COMMENT]
+directory entirely:
+
+  [./symfony generate:plugin sfExamplePlugin --skip-test-dir|INFO]
 EOF;
   }
 
@@ -71,14 +78,7 @@ EOF;
       throw new sfCommandException(sprintf('The application name "%s" is invalid.', $options['test-application']));
     }
 
-    try
-    {
-      $this->checkPluginExists($plugin);
-      throw new sfCommandException(sprintf('The plugin "%s" already exists.', $plugin));
-    }
-    catch (Exception $e)
-    {
-    }
+    $this->checkPluginExists($plugin, false);
 
     if (is_readable(sfConfig::get('sf_data_dir').'/skeleton/plugin'))
     {
@@ -108,7 +108,7 @@ EOF;
     $this->getFilesystem()->rename($pluginDir.'/config/PluginConfiguration.class.php', $pluginDir.'/config/'.$plugin.'Configuration.class.php');
 
     // tokens
-    $finder = sfFinder::type('file')->name('*.php', '*.yml');
+    $finder = sfFinder::type('file')->name('*.php', '*.yml', 'package.xml.tmpl');
     $this->getFilesystem()->replaceTokens($finder->in($pluginDir), '##', '##', $constants);
 
     if ($options['skip-test-dir'])

@@ -1,14 +1,14 @@
 <?php
 
 /**
- * Plugin generator base task.
+ * Plugin plugin base task.
  * 
  * @package     sfTaskExtraPlugin
  * @subpackage  task
  * @author      Kris Wallsmith <kris.wallsmith@symfony-project.com>
  * @version     SVN: $Id$
  */
-abstract class sfTaskExtraGeneratorBaseTask extends sfGeneratorBaseTask
+abstract class sfTaskExtraPluginBaseTask extends sfPluginBaseTask
 {
   /**
    * @see sfTaskExtraBaseTask
