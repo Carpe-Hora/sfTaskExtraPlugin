@@ -222,7 +222,7 @@ EOF;
     $this->getFilesystem()->copy($templatePath, $this->pluginDir.'/package.xml');
     $this->getFilesystem()->replaceTokens($this->pluginDir.'/package.xml', '##', '##', $tokens);
 
-    unset($tokens['PLUGIN_VERSION'], $tokens['API_VERSION'], $tokens['STABILITY']);
+    unset($tokens['CURRENT_DATE'], $tokens['PLUGIN_VERSION'], $tokens['API_VERSION'], $tokens['STABILITY'], $tokens['CONTENTS']);
     if ($tokens)
     {
       // create or update package.xml template

@@ -66,10 +66,9 @@ abstract class sfTaskExtraBaseTask extends sfBaseTask
     {
       $value = is_null($options['value']) ? $task->ask(isset($error) && 'required' != $error->getCode() ? array_merge(array($error->getMessage(), ''), $question) : $question, isset($error) ? 'ERROR' : $options['style']) : $options['value'];
 
-      $v = clone $validator;
       try
       {
-        $value = $v->clean($value);
+        $value = $validator->clean($value);
 
         return $value;
       }
