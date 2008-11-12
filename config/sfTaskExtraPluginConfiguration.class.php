@@ -13,11 +13,11 @@ class sfTaskExtraPluginConfiguration extends sfPluginConfiguration
   /**
    * @see sfPluginConfiguration
    */
-  public function configure()
+  public function initialize()
   {
     // $this->dispatcher->connect('command.filter_options', array($this, 'filterCommandOptions'));
     // $this->dispatcher->connect('command.pre_command', array($this, 'listenForPreCommand'));
-    // $this->dispatcher->connect('command.post_command', array($this, 'listenForPostCommand'));
+    $this->dispatcher->connect('command.post_command', array($this, 'listenForPostCommand'));
   }
 
   /**
@@ -62,6 +62,15 @@ class sfTaskExtraPluginConfiguration extends sfPluginConfiguration
   public function listenForPostCommand(sfEvent $event)
   {
     $task = $event->getSubject();
+
+    if ($task instanceof sfPropelBuildModelTask)
+    {
+      $addon = new sfTaskExtraBuildModelAddon($this->configuration, new sfAnsiColorFormatter());
+      $addon->setWrappedTask($task);
+      $addon->executeAddon();
+
+      return true;
+    }
 
     return false;
   }

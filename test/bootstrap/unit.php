@@ -8,7 +8,7 @@ if (!isset($_SERVER['SYMFONY']))
 require_once $_SERVER['SYMFONY'].'/autoload/sfCoreAutoload.class.php';
 sfCoreAutoload::register();
 
-$configuration = new sfProjectConfiguration(getcwd());
+$configuration = new sfProjectConfiguration(dirname(__FILE__).'/../fixtures/project');
 require_once $configuration->getSymfonyLibDir().'/vendor/lime/lime.php';
 
 require_once dirname(__FILE__).'/../../config/sfTaskExtraPluginConfiguration.class.php';
