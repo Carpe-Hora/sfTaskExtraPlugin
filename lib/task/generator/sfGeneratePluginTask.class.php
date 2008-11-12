@@ -132,7 +132,7 @@ EOF;
       $this->getFilesystem()->replaceTokens($testApp.'/config/'.$options['test-application'].'Configuration.class.php', '##', '##', $constants);
 
       // settings.yml
-      $this->getFilesystem()->replaceTokens($testApp.'/config/settings.yml', '##', '##', array('NO_SCRIPT_NAME' => 'off', 'CSRF_SECRET' => $plugin, 'ESCAPING_STRATEGY' => true));
+      $this->getFilesystem()->replaceTokens($testApp.'/config/settings.yml', '##', '##', array('NO_SCRIPT_NAME' => 'off', 'CSRF_SECRET' => $plugin, 'ESCAPING_STRATEGY' => 'on'));
     }
 
     // modules

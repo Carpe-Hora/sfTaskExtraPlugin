@@ -76,6 +76,16 @@ EOF;
 
     if (!file_exists($this->pluginDir.'/package.xml'))
     {
+      $cleanup['temp_files'] = array();
+      foreach (sfFinder::type('dir')->in($this->pluginDir) as $dir)
+      {
+        if (!sfFinder::type('any')->maxdepth(0)->in($dir))
+        {
+          $this->getFilesystem()->touch($file = $dir.'/.sf');
+          $cleanup['temp_files'][] = $file;
+        }
+      }
+
       $cleanup['package_file'] = true;
       $this->generatePackageFile($arguments, $options);
     }
@@ -118,6 +128,7 @@ EOF;
   {
     $options = array_merge(array(
       'package_file' => false,
+      'temp_files'   => array(),
     ), $options);
 
     if ($extension = $options['package_file'])
@@ -128,6 +139,11 @@ EOF;
       }
 
       $this->getFilesystem()->remove($this->pluginDir.'/package.xml');
+    }
+
+    foreach ($options['temp_files'] as $file)
+    {
+      $this->getFilesystem()->remove($file);
     }
   }
 
