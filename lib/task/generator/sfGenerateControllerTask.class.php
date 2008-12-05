@@ -120,7 +120,7 @@ EOF;
 
     if (file_exists(sfConfig::get('sf_web_dir').'/'.$filename))
     {
-      if (isset($options['force']) && $options['force'])
+      if ($options['force'])
       {
         $this->getFilesystem()->remove(sfConfig::get('sf_web_dir').'/'.$filename);
       }
@@ -131,12 +131,12 @@ EOF;
     }
 
     $this->getFilesystem()->copy(dirname(__FILE__).'/skeleton/controller/index.php', sfConfig::get('sf_web_dir').'/'.$filename);
-    if (isset($options['check-server']) && $options['check-server'])
+    if ($options['check-server'])
     {
       $this->getFilesystem()->replaceTokens(sfConfig::get('sf_web_dir').'/'.$filename, '##', '##', array(
         'APP_NAME'    => "\n  ".'isset($_SERVER[\'SF_APPLICATION\']) ? $_SERVER[\'SF_APPLICATION\'] : '.var_export($app, true),
         'ENVIRONMENT' => "\n  ".'isset($_SERVER[\'SF_ENVIRONMENT\']) ? $_SERVER[\'SF_ENVIRONMENT\'] : '.var_export($env, true),
-        'IS_DEBUG'    => "\n  ".'isset($_SERVER[\'SF_DEBUG\']) ? (boolean) $_SERVER[\'SF_DEBUG\'] : '.(isset($options['debug']) && $options['debug'] ? 'true' : 'false'),
+        'IS_DEBUG'    => "\n  ".'isset($_SERVER[\'SF_DEBUG\']) ? (boolean) $_SERVER[\'SF_DEBUG\'] : '.($options['debug'] ? 'true' : 'false'),
         'IP_CHECK'    => $ipCheck,
       ));
     }
@@ -145,7 +145,7 @@ EOF;
       $this->getFilesystem()->replaceTokens(sfConfig::get('sf_web_dir').'/'.$filename, '##', '##', array(
         'APP_NAME'    => var_export($app, true),
         'ENVIRONMENT' => var_export($env, true),
-        'IS_DEBUG'    => isset($options['debug']) && $options['debug'] ? 'true' : 'false',
+        'IS_DEBUG'    => $options['debug'] ? 'true' : 'false',
         'IP_CHECK'    => $ipCheck,
       ));
     }
