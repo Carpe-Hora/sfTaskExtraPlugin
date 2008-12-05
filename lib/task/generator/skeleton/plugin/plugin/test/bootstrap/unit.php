@@ -11,5 +11,13 @@ sfCoreAutoload::register();
 $configuration = new sfProjectConfiguration(dirname(__FILE__).'/../fixtures/project');
 require_once $configuration->getSymfonyLibDir().'/vendor/lime/lime.php';
 
+function ##PLUGIN_NAME##_autoload_again($class)
+{
+  $autoload = sfSimpleAutoload::getInstance();
+  $autoload->reload();
+  return $autoload->autoload($class);
+}
+spl_autoload_register('##PLUGIN_NAME##_autoload_again');
+
 require_once dirname(__FILE__).'/../../config/##PLUGIN_NAME##Configuration.class.php';
 $plugin_configuration = new ##PLUGIN_NAME##Configuration($configuration, dirname(__FILE__).'/../..');
