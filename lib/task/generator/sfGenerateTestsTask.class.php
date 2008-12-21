@@ -65,6 +65,8 @@ EOF;
     $prune = array_merge(array('symfony', 'om', 'map', 'base'), $options['exclude']);
     $dirs  = count($options['dir']) ? $options['dir'] : array('');
 
+    $count = 0;
+
     $finder = sfFinder::type('file')->relative()->name($name)->prune($prune);
     foreach ($dirs as $dir)
     {
@@ -75,12 +77,19 @@ EOF;
           $path = $dir.(false === strpos($file, DIRECTORY_SEPARATOR) ? '' : ('/'.dirname($file)));
           $test = sfConfig::get('sf_test_dir').'/unit'.$path.'/'.$match[0].'Test.php';
 
-          $this->getFilesystem()->copy(dirname(__FILE__).'/skeleton/test/UnitTest.php', $test);
-          $this->getFilesystem()->replaceTokens($test, '##', '##', array(
-            'TEST_DIR' => str_repeat('/..', substr_count($path, DIRECTORY_SEPARATOR) + 1),
-          ));
+          if (!file_exists($test))
+          {
+            $this->getFilesystem()->copy(dirname(__FILE__).'/skeleton/test/UnitTest.php', $test);
+            $this->getFilesystem()->replaceTokens($test, '##', '##', array(
+              'TEST_DIR' => str_repeat('/..', substr_count($path, DIRECTORY_SEPARATOR) + 1),
+            ));
+
+            $count++;
+          }
         }
       }
     }
+
+    $this->logSection('task', sprintf('Generated %s test stub(s)', number_format($count)));
   }
 }
