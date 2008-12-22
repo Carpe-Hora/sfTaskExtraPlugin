@@ -81,6 +81,7 @@ EOF;
           {
             $this->getFilesystem()->copy(dirname(__FILE__).'/skeleton/test/UnitTest.php', $test);
             $this->getFilesystem()->replaceTokens($test, '##', '##', array(
+              'CLASS'    => $match[0],
               'TEST_DIR' => str_repeat('/..', substr_count($path, DIRECTORY_SEPARATOR) + 1),
             ));
 
