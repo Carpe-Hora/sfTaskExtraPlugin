@@ -22,6 +22,7 @@ abstract class sfTaskExtraAddon extends sfTaskExtraBaseTask
   {
     parent::__construct($configuration->getEventDispatcher(), $formatter);
     $this->configuration = $configuration;
+    $this->pluginConfiguration = $configuration->getPluginConfiguration('sfTaskExtraPlugin');
   }
 
   /**

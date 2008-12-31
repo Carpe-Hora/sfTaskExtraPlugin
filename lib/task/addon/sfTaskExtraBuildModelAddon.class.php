@@ -16,7 +16,7 @@ class sfTaskExtraBuildModelAddon extends sfTaskExtraAddon
   public function executeAddon($arguments = array(), $options = array())
   {
     $finder = sfFinder::type('file')->maxdepth(0);
-    foreach ($finder->in($this->configuration->getPluginSubPaths('/lib/model')) as $file)
+    foreach ($finder->in($this->pluginConfiguration->getConnectedPluginSubPaths('/lib/model')) as $file)
     {
       if (
         !file_exists($pluginFile = dirname($file).'/plugin/Plugin'.basename($file))
