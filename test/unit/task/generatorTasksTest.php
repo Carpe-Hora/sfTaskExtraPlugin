@@ -11,12 +11,16 @@ function task_extra_cleanup()
 task_extra_cleanup();
 register_shutdown_function('task_extra_cleanup');
 
-$t = new task_extra_lime_test(28, new lime_output_color());
+$t = new task_extra_lime_test(30, new lime_output_color());
 
 $t->diag('sfGeneratePluginTask');
 $t->task_ok('sfGeneratePluginTask', array('sfTest*Plugin'), array(), false, '"sfGeneratePluginTask" fails when plugin name includes bad characters');
 $t->task_ok('sfGeneratePluginTask', array('sfTest'), array(), false, '"sfGeneratePluginTask" fails when plugin name ends other than "Plugin"');
 $t->task_ok('sfGeneratePluginTask', array('sfTestPlugin'));
+$t->task_ok('sfGeneratePluginTask', array('sfTestPlugin'), array(), false, '"sfGeneratePluginTask" fails when plugin already exists');
+
+mkdir(sfConfig::get('sf_plugins_dir').'/anotherPlugin');
+$t->task_ok('sfGeneratePluginTask', array('anotherPlugin'), array(), true, '"sfGeneratePluginTask" runs on an empty plugin directory');
 
 $plugin_dir   = sfConfig::get('sf_plugins_dir').'/sfTestPlugin';
 $config_file  = $plugin_dir.'/config/sfTestPluginConfiguration.class.php';
