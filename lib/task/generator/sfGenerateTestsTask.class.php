@@ -80,9 +80,29 @@ EOF;
           if (!file_exists($test))
           {
             $this->getFilesystem()->copy(dirname(__FILE__).'/skeleton/test/UnitTest.php', $test);
+
+            $r = new ReflectionClass($match[0]);
+            $tests = '';
+            foreach ($r->getMethods() as $method)
+            {
+              if ($method->getDeclaringClass()->getName() == $r->getName() && $method->isPublic())
+              {
+                $type = $method->isStatic() ? '::' : '->';
+                $tests .= <<<EOF
+// $type{$method->getName()}()
+\$t->diag('$type{$method->getName()}()');
+
+
+
+
+EOF;
+              }
+            }
+
             $this->getFilesystem()->replaceTokens($test, '##', '##', array(
               'CLASS'    => $match[0],
               'TEST_DIR' => str_repeat('/..', substr_count($path, DIRECTORY_SEPARATOR) + 1),
+              'TESTS'    => $tests,
             ));
 
             $count++;
