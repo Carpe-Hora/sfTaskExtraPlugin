@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__).'/sfTaskExtraGeneratorBaseTask.class.php';
+
 /**
  * Generates unit test stub scripts.
  * 

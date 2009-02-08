@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__).'/sfTaskExtraGeneratorBaseTask.class.php';
+
 /**
  * Wraps the generate module task to create a plugin module
  * 

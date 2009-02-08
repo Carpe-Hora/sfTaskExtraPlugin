@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__).'/sfTaskExtraSubversionBaseTask.class.php';
+
 /**
  * Subversion setup task.
  * 

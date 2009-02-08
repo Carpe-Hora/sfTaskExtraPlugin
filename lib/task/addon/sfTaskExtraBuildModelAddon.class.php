@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__).'/sfTaskExtraAddon.class.php';
+
 /**
  * Adds functionality to build model tasks.
  * 

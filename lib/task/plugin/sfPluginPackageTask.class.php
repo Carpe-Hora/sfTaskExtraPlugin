@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__).'/sfTaskExtraPluginBaseTask.class.php';
+
 /**
  * Packages a plugin.
  * 

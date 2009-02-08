@@ -1,5 +1,7 @@
 <?php
 
+require_once dirname(__FILE__).'/sfTaskExtraTestBaseTask.class.php';
+
 /**
  * Launches a plugin test suite.
  * 
