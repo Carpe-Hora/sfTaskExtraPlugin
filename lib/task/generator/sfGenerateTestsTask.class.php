@@ -15,10 +15,6 @@ class sfGenerateTestsTask extends sfTaskExtraGeneratorBaseTask
    */
   protected function configure()
   {
-    $this->addArguments(array(
-      new sfCommandArgument('class', sfCommandArgument::OPTIONAL, 'The class to test'),
-    ));
-
     $this->addOptions(array(
       new sfCommandOption('dir', null, sfCommandOption::PARAMETER_REQUIRED | sfCommandOption::IS_ARRAY, 'The subdirectory to search for classes in'),
       new sfCommandOption('exclude', null, sfCommandOption::PARAMETER_REQUIRED | sfCommandOption::IS_ARRAY, 'Directory to exclude'),
@@ -35,19 +31,16 @@ The [generate:tests|INFO] task generates empty unit tests scripts in your
 
   [./symfony generate:tests|INFO]
 
-You can specify a particular class:
-
-  [./symfony generate:tests Article|INFO]
-
 As the task recurs through your [lib/|COMMENT] directory, you can specify subdirectories
 to limit the scope of the task with the [--dir|COMMENT] option:
 
   [./symfony generate:tests --dir=form|INFO]
 
-Alternatively, you can specify directories to exclude with the
-[--exclude|COMMENT] option:
+You can also specify directories to exclude with the [--exclude|COMMENT] option:
 
   [./symfony generate:tests --exclude=filter|INFO]
+
+The directories symfony, om, map and base are excluded by default.
 EOF;
   }
 
@@ -56,55 +49,28 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    if (!is_null($arguments['class']) && !preg_match('/^\w+$/', $arguments['class']))
-    {
-      throw new InvalidArgumentException(sprintf('The class name "%s" is not valid.', $arguments['class']));
-    }
-
-    $name  = $arguments['class'] ? sprintf('/^%s(?:\.class)?\.php$/', $arguments['class']) : '*.php';
     $prune = array_merge(array('symfony', 'om', 'map', 'base'), $options['exclude']);
     $dirs  = count($options['dir']) ? $options['dir'] : array('');
 
     $count = 0;
 
-    $finder = sfFinder::type('file')->relative()->name($name)->prune($prune);
+    $finder = sfFinder::type('file')->relative()->name('*.php')->prune($prune);
     foreach ($dirs as $dir)
     {
       foreach ($finder->in(sfConfig::get('sf_lib_dir').'/'.$dir) as $file)
       {
-        if (preg_match('/^\w+/', basename($file), $match))
+        if (
+          preg_match('/^\w+/', basename($file), $match)
+          &&
+          class_exists($match[0])
+        )
         {
-          $path = $dir.(false === strpos($file, DIRECTORY_SEPARATOR) ? '' : ('/'.dirname($file)));
-          $test = sfConfig::get('sf_test_dir').'/unit'.$path.'/'.$match[0].'Test.php';
+          $generateTest = new sfGenerateTestTask($this->dispatcher, $this->formatter);
+          $generateTest->setCommandApplication($this->commandApplication);
+          $ret = $generateTest->run(array($match[0]));
 
-          if (!file_exists($test))
+          if (!$ret)
           {
-            $this->getFilesystem()->copy(dirname(__FILE__).'/skeleton/test/UnitTest.php', $test);
-
-            $r = new ReflectionClass($match[0]);
-            $tests = '';
-            foreach ($r->getMethods() as $method)
-            {
-              if ($method->getDeclaringClass()->getName() == $r->getName() && $method->isPublic())
-              {
-                $type = $method->isStatic() ? '::' : '->';
-                $tests .= <<<EOF
-// $type{$method->getName()}()
-\$t->diag('$type{$method->getName()}()');
-
-
-
-
-EOF;
-              }
-            }
-
-            $this->getFilesystem()->replaceTokens($test, '##', '##', array(
-              'CLASS'    => $match[0],
-              'TEST_DIR' => str_repeat('/..', substr_count($path, DIRECTORY_SEPARATOR) + 1),
-              'TESTS'    => $tests,
-            ));
-
             $count++;
           }
         }

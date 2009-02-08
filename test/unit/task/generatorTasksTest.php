@@ -7,11 +7,12 @@ function task_extra_cleanup()
   sfToolkit::clearDirectory(dirname(__FILE__).'/../../fixtures/project/cache');
   sfToolkit::clearDirectory(dirname(__FILE__).'/../../fixtures/project/log');
   sfToolkit::clearDirectory(dirname(__FILE__).'/../../fixtures/project/plugins');
+  sfToolkit::clearDirectory(dirname(__FILE__).'/../../fixtures/project/test/unit');
 }
 task_extra_cleanup();
 register_shutdown_function('task_extra_cleanup');
 
-$t = new task_extra_lime_test(30, new lime_output_color());
+$t = new task_extra_lime_test(37, new lime_output_color());
 
 $t->diag('sfGeneratePluginTask');
 $t->task_ok('sfGeneratePluginTask', array('sfTest*Plugin'), array(), false, '"sfGeneratePluginTask" fails when plugin name includes bad characters');
@@ -64,3 +65,14 @@ $t->like(@file_get_contents(sfConfig::get('sf_plugins_dir').'/sfTestAgainPlugin/
 $t->diag('sfGeneratePluginTask --skip-test-dir option');
 $t->task_ok('sfGeneratePluginTask', array('sfTestYetAgainPlugin'), array('--skip-test-dir', '--module=another'));
 $t->ok(!is_dir(sfConfig::get('sf_plugins_dir').'/sfTestYetAgainPlugin/test'), '"sfGeneratePluginTask" does not generate a test directory when "--skip-test-dir" is used');
+
+$t->diag('sfGenerateTestsTask');
+$t->task_ok('sfGenerateTestsTask', array(), array(), true);
+$t->ok(file_exists(sfConfig::get('sf_test_dir').'/unit/form/FormTest.php'), '"sfGenerateTestsTask" creates test files');
+
+$t->diag('sfGenerateTestTask');
+$t->task_ok('sfGenerateTestTask', array('Form'), array(), false, '"sfGenerateTestTask" fails if test script exists');
+$t->task_ok('sfGenerateTestTask', array('Form'), array('--force'), true, '"sfGenerateTestTask" succeeds with existing file and --force option');
+$t->like(@file_get_contents(sfConfig::get('sf_test_dir').'/unit/form/FormTest.php'), '/getWidgetSchema\(\)/', '"sfGenerateTestTask" detects appropriate template');
+$t->unlike(@file_get_contents(sfConfig::get('sf_test_dir').'/unit/form/FormTest.php'), '/__construct\(\)/', '"sfGenerateTestTask" detects appropriate template');
+$t->like(@file_get_contents(sfConfig::get('sf_test_dir').'/unit/util/ToolkitTest.php'), '/doXYZ\(\)/', '"sfGenerateTestTask" creates method test stubs');
