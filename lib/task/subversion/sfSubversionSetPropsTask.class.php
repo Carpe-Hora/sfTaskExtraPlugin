@@ -51,21 +51,13 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    $this->addIgnore(array(
-      'cache',
-      'data/sql',
-      'lib/form/base',
-      'lib/form/doctrine/base',
-      'lib/form/doctrine/*Plugin/base',
-      'lib/filter/base',
-      'lib/filter/doctrine/base',
-      'lib/filter/doctrine/*Plugin/base',
-      'lib/model/doctrine/base',
-      'lib/model/doctrine/*Plugin/base',
-      'lib/model/om',
-      'lib/model/map',
-      'log',
-      'web/uploads',
+    $finder = sfFinder::type('dir')->name('base');
+
+    $this->addIgnore(array_merge(
+      $finder->in('lib/form/doctrine'),
+      $finder->in('lib/filter/doctrine'),
+      $finder->in('lib/model/doctrine'),
+      array('cache', 'data/sql', 'lib/model/om', 'lib/model/map', 'log', 'web/uploads')
     ));
 
     $this->setSubversionProperty('svn:ignore', array('*transformed*', '*generated*'), 'config');
