@@ -10,6 +10,8 @@
  */
 class ##PLUGIN_NAME##Configuration extends sfPluginConfiguration
 {
+  const VERSION = '1.0.0-DEV';
+
   /**
    * @see sfPluginConfiguration
    */
