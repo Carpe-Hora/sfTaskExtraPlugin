@@ -19,5 +19,12 @@ function ##PLUGIN_NAME##_autoload_again($class)
 }
 spl_autoload_register('##PLUGIN_NAME##_autoload_again');
 
-require_once dirname(__FILE__).'/../../config/##PLUGIN_NAME##Configuration.class.php';
-$plugin_configuration = new ##PLUGIN_NAME##Configuration($configuration, dirname(__FILE__).'/../..');
+if (file_exists($config = dirname(__FILE__).'/../../config/##PLUGIN_NAME##Configuration.class.php'))
+{
+  require_once $config;
+  $plugin_configuration = new ##PLUGIN_NAME##Configuration($configuration, dirname(__FILE__).'/../..', '##PLUGIN_NAME##');
+}
+else
+{
+  $plugin_configuration = new sfPluginConfigurationGeneric($configuration, dirname(__FILE__).'/../..', '##PLUGIN_NAME##');
+}
