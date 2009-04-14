@@ -71,7 +71,7 @@ EOF;
   {
     $this->checkPluginExists($arguments['plugin']);
 
-    $this->pluginDir = sfConfig::get('sf_plugins_dir').'/'.$arguments['plugin'];
+    $this->pluginDir = sfApplicationConfiguration::getActive()->getPluginConfiguration($arguments['plugin'])->getRootDir();
     $this->interactive = !$options['non-interactive'];
 
     $cleanup = array();

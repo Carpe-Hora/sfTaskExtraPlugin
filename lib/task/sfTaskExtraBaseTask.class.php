@@ -23,12 +23,11 @@ abstract class sfTaskExtraBaseTask extends sfBaseTask
    */
   static public function checkPluginExists($plugin, $boolean = true)
   {
-    $root = sfConfig::get('sf_plugins_dir').'/'.$plugin;
-    $exists = is_dir($root) && count(sfFinder::type('any')->in($root)) > 0;
-
-    if ($boolean != $exists)
-    {
-      throw new sfException(sprintf($boolean ? 'Plugin "%s" does not exist' : 'Plugin "%s" exists', $plugin));
+    try {
+      sfApplicationConfiguration::getActive()->getPluginConfiguration($plugin);
+      return true;
+    } catch (Exception $e) {
+      return false;
     }
   }
 
