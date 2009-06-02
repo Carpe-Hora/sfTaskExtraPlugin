@@ -177,61 +177,47 @@ EOF;
       ), array(
         'required' => 'You must provide a summary of your plugin.',
       )), array(
-        'value'    => isset($properties['symfony']['author']) ? $properties['symfony']['author'] : null,
+        'value'    => isset($properties['symfony']['author']) ? htmlentities($properties['symfony']['author']) : null,
       ));
     }
 
     if (false !== strpos($template, '##LEAD_NAME##'))
     {
-      $tokens['LEAD_NAME'] = $this->askAndValidate('Lead developer name:', new sfValidatorString(array(), array(
-        'required' => 'A lead developer name is required.',
-      )), array(
-        'value'    => isset($properties['symfony']['author']) ? $properties['symfony']['author'] : null,
+      $validator = new sfValidatorString(array(), array('required' => 'A lead developer name is required.'));
+      $tokens['LEAD_NAME'] = $this->askAndValidate('Lead developer name:', $validator, array(
+        'value' => isset($properties['symfony']['author']) ? htmlentities($properties['symfony']['author']) : null,
       ));
     }
 
     if (false !== strpos($template, '##LEAD_EMAIL##'))
     {
-      $tokens['LEAD_EMAIL'] = $this->askAndValidate('Lead developer email:', new sfValidatorEmail(array(), array(
-        'required' => 'A valid lead developer email address is required.',
-        'invalid'  => '"%value%" is not a valid email address.',
-      )), array(
-        'value'    =>isset($properties['symfony']['email']) ? $properties['symfony']['email'] : null,
+      $validator = new sfValidatorEmail(array(), array('required' => 'A valid lead developer email address is required.', 'invalid' => '"%value%" is not a valid email address.'));
+      $tokens['LEAD_EMAIL'] = $this->askAndValidate('Lead developer email:', $validator, array(
+        'value' => isset($properties['symfony']['email']) ? htmlentities($properties['symfony']['email']) : null,
       ));
     }
 
     if (false !== strpos($template, '##LEAD_USERNAME##'))
     {
-      $tokens['LEAD_USERNAME'] = $this->askAndValidate('Lead developer username:', new sfValidatorString(array(), array(
-        'required' => 'A lead developer username is required.'
-      )), array(
-        'value'    =>isset($properties['symfony']['username']) ? $properties['symfony']['username'] : null,
+      $validator = new sfValidatorString(array(), array('required' => 'A lead developer username is required.'));
+      $tokens['LEAD_USERNAME'] = $this->askAndValidate('Lead developer username:', $validator, array(
+        'value' => isset($properties['symfony']['username']) ? htmlentities($properties['symfony']['username']) : null,
       ));
     }
 
     if (false !== strpos($template, '##PLUGIN_VERSION##'))
     {
-      $tokens['PLUGIN_VERSION'] = $this->askAndValidate('Plugin version number (i.e. "1.0.5"):', new sfValidatorRegex(array(
-        'pattern'  => '/\d+\.\d+\.\d+/',
-      ), array(
-        'required' => 'A valid version number is required.',
-        'invalid'  => '"%value%" is not a valid version number.',
-      )), array(
-        'value'    => $options['plugin-version'],
-      ));
+      $validator = new sfValidatorRegex(array('pattern' => '/\d+\.\d+\.\d+/', ), array('required' => 'A valid version number is required.', 'invalid' => '"%value%" is not a valid version number.'));
+      $tokens['PLUGIN_VERSION'] = $this->askAndValidate('Plugin version number (i.e. "1.0.5"):', $validator, array('value' => $options['plugin-version']));
+
+      // set api version based on plugin version
       $tokens['API_VERSION'] = version_compare($tokens['PLUGIN_VERSION'], '0.1.0', '>') ? join('.', array_slice(explode('.', $tokens['PLUGIN_VERSION']), 0, 2)).'.0' : $tokens['PLUGIN_VERSION'];
     }
 
     if (false !== strpos($template, '##STABILITY##'))
     {
-      $tokens['STABILITY'] = $this->askAndValidate('Plugin stability:', new sfValidatorChoice(array(
-        'choices'  => $choices = array('devel', 'alpha', 'beta', 'stable'),
-      ), array(
-        'required' => 'A valid stability is required.',
-        'invalid'  => '"%value%" is not a valid stability ('.join('|', $choices).').',
-      )), array(
-        'value'    => $options['plugin-stability'],
-      ));
+      $validator = new sfValidatorChoice(array('choices' => $choices = array('devel', 'alpha', 'beta', 'stable')), array('required' => 'A valid stability is required.', 'invalid' => '"%value%" is not a valid stability ('.join('|', $choices).').'));
+      $tokens['STABILITY'] = $this->askAndValidate('Plugin stability:', $validator, array('value' => $options['plugin-stability']));
     }
 
     $finder = sfFinder::type('any')->maxdepth(0)->prune('test')->discard('test', 'package.xml.tmpl');
@@ -240,8 +226,16 @@ EOF;
     $this->getFilesystem()->copy($templatePath, $this->pluginDir.'/package.xml');
     $this->getFilesystem()->replaceTokens($this->pluginDir.'/package.xml', '##', '##', $tokens);
 
-    unset($tokens['CURRENT_DATE'], $tokens['PLUGIN_VERSION'], $tokens['API_VERSION'], $tokens['STABILITY'], $tokens['CONTENTS']);
-    if ($tokens)
+    // remove those tokens that shouldn't be written to the template
+    unset(
+      $tokens['CURRENT_DATE'],
+      $tokens['PLUGIN_VERSION'],
+      $tokens['API_VERSION'],
+      $tokens['STABILITY'],
+      $tokens['CONTENTS']
+    );
+
+    if (count($tokens))
     {
       // create or update package.xml template
       $this->getFilesystem()->copy($templatePath, $this->pluginDir.'/package.xml.tmpl');
@@ -290,7 +284,7 @@ EOF;
     $xml = $baseXml->asXml();
 
     // remove the xml declaration
-    $xml = trim(substr($xml, strpos($xml, PHP_EOL)));
+    list(, $xml) = preg_split('/[\r\n]+/', $xml, 2);
 
     return $xml;
   }

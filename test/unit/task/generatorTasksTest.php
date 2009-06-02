@@ -2,16 +2,6 @@
 
 include dirname(__FILE__).'/../../bootstrap/unit.php';
 
-function task_extra_cleanup()
-{
-  sfToolkit::clearDirectory(dirname(__FILE__).'/../../fixtures/project/cache');
-  sfToolkit::clearDirectory(dirname(__FILE__).'/../../fixtures/project/log');
-  sfToolkit::clearDirectory(dirname(__FILE__).'/../../fixtures/project/plugins');
-  sfToolkit::clearDirectory(dirname(__FILE__).'/../../fixtures/project/test/unit');
-}
-task_extra_cleanup();
-register_shutdown_function('task_extra_cleanup');
-
 $t = new task_extra_lime_test(37, new lime_output_color());
 
 $t->diag('sfGeneratePluginTask');

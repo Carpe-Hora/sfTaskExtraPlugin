@@ -65,3 +65,13 @@ class task_extra_lime_test extends lime_test
     return $this->ok($ok, $message);
   }
 }
+
+function task_extra_cleanup()
+{
+  sfToolkit::clearDirectory(dirname(__FILE__).'/../fixtures/project/cache');
+  sfToolkit::clearDirectory(dirname(__FILE__).'/../fixtures/project/log');
+  sfToolkit::clearDirectory(dirname(__FILE__).'/../fixtures/project/plugins');
+  sfToolkit::clearDirectory(dirname(__FILE__).'/../fixtures/project/test/unit');
+}
+task_extra_cleanup();
+register_shutdown_function('task_extra_cleanup');

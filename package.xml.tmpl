@@ -41,6 +41,43 @@
       </package>
     </required>
   </dependencies>
-  <phprelease></phprelease>
-  <changelog></changelog>
+  <phprelease/>
+  <changelog>
+    <release>
+      <version>
+        <release>0.0.1</release>
+        <api>0.0.1</api>
+      </version>
+      <stability>
+        <release>alpha</release>
+        <api>alpha</api>
+      </stability>
+      <license uri="http://www.symfony-project.com/license">MIT license</license>
+      <license>MIT</license>
+      <date>2008-11-08</date>
+      <notes>
+        * Initial release of `generate:plugin`
+        * Initial release of `generate:plugin-module`
+        * Initial release of `plugin:package`
+      </notes>
+    </release>
+    <release>
+      <version>
+        <release>0.0.2</release>
+        <api>0.0.2</api>
+      </version>
+      <stability>
+        <release>alpha</release>
+        <api>alpha</api>
+      </stability>
+      <license uri="http://www.symfony-project.com/license">MIT license</license>
+      <license>MIT</license>
+      <date>2008-11-13</date>
+      <notes>
+        * Fixed packaging of empty directories in `plugin:package`
+        * Added `post_command` hook to `propel:build-model` to insert model class for plugin logic
+        * Initial release of `test:plugin`
+      </notes>
+    </release>
+  </changelog>
 </package>
