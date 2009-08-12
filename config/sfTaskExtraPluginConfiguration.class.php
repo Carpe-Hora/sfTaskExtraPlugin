@@ -21,7 +21,7 @@ class sfTaskExtraPluginConfiguration extends sfPluginConfiguration
     $this->dispatcher->connect('configuration.method_not_found', array($this, 'listenForConfigurationMethodNotFound'));
 
     // $this->dispatcher->connect('command.filter_options', array($this, 'filterCommandOptions'));
-    // $this->dispatcher->connect('command.pre_command', array($this, 'listenForPreCommand'));
+    $this->dispatcher->connect('command.pre_command', array($this, 'listenForPreCommand'));
     $this->dispatcher->connect('command.post_command', array($this, 'listenForPostCommand'));
   }
 
@@ -111,6 +111,12 @@ class sfTaskExtraPluginConfiguration extends sfPluginConfiguration
     $task = $event->getSubject();
     $arguments = $event['arguments'];
     $options = $event['options'];
+
+    // set global symfony path for plugin tests
+    if ('test' == $task->getNamespace())
+    {
+      $_SERVER['SYMFONY'] = sfConfig::get('sf_symfony_lib_dir');
+    }
 
     return false;
   }
