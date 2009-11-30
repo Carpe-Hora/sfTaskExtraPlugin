@@ -79,7 +79,7 @@ EOF;
 
         if (isset($options['editor-cmd']))
         {
-          $this->getFilesystem()->sh($options['editor-cmd'].' '.$test);
+          $this->getFilesystem()->execute($options['editor-cmd'].' '.$test);
         }
 
         return 1;
@@ -143,7 +143,7 @@ EOF;
 
     if (isset($options['editor-cmd']))
     {
-      $this->getFilesystem()->sh($options['editor-cmd'].' '.$test);
+      $this->getFilesystem()->execute($options['editor-cmd'].' '.$test);
     }
   }
 }

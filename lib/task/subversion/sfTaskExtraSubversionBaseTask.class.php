@@ -4,7 +4,7 @@ require_once dirname(__FILE__).'/../sfTaskExtraBaseTask.class.php';
 
 /**
  * Base Subversion task.
- * 
+ *
  * @package     sfTaskExtraPlugin
  * @subpackage  task
  * @author      Kris Wallsmith <kris.wallsmith@symfony-project.com>
@@ -17,13 +17,13 @@ abstract class sfTaskExtraSubversionBaseTask extends sfTaskExtraBaseTask
 
   protected function getStatus($path)
   {
-    $xml = simplexml_load_string($this->getFilesystem()->sh(sprintf('%s status --xml %s', $this->subversionBinary, escapeshellarg($path))));
+    $xml = simplexml_load_string($this->getFilesystem()->execute(sprintf('%s status --xml %s', $this->subversionBinary, escapeshellarg($path))));
     return (string) $xml->target->entry->{'wc-status'}['item'];
   }
 
   /**
    * Adds an ignore property.
-   * 
+   *
    * @param string|array $paths
    * @param string       $value
    */
@@ -38,14 +38,14 @@ abstract class sfTaskExtraSubversionBaseTask extends sfTaskExtraBaseTask
     {
       if ('unversioned' == $this->getStatus($path))
       {
-        $this->getFilesystem()->sh(sprintf('%s add --parents -N %s', $this->subversionBinary, $path));
+        $this->getFilesystem()->execute(sprintf('%s add --parents -N %s', $this->subversionBinary, $path));
       }
 
       foreach (glob($path.'/'.$value) as $entry)
       {
         if (!in_array($this->getStatus($entry), array('unversioned', 'ignored')))
         {
-          $this->getFilesystem()->sh(sprintf('%s rm --force %s', $this->subversionBinary, $entry));
+          $this->getFilesystem()->execute(sprintf('%s rm --force %s', $this->subversionBinary, $entry));
         }
       }
 
@@ -58,7 +58,7 @@ abstract class sfTaskExtraSubversionBaseTask extends sfTaskExtraBaseTask
 
   /**
    * Sets a Subversion property on a path.
-   * 
+   *
    * @param string       $property
    * @param string|array $value
    * @param string|array $path
@@ -81,7 +81,7 @@ abstract class sfTaskExtraSubversionBaseTask extends sfTaskExtraBaseTask
 
     foreach ($path as $p)
     {
-      $this->getFilesystem()->sh(vsprintf('%s propset %s -F %s %s', array(
+      $this->getFilesystem()->execute(vsprintf('%s propset %s -F %s %s', array(
         $this->subversionBinary,
         $property,
         escapeshellarg($file),
