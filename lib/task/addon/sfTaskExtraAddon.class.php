@@ -58,7 +58,7 @@ abstract class sfTaskExtraAddon extends sfTaskExtraBaseTask
    */
   public function log($messages)
   {
-    is_null($this->wrappedTask) ? parent::log($message) : $this->wrappedTask->log($message);
+    null === $this->wrappedTask ? parent::log($message) : $this->wrappedTask->log($message);
   }
 
   /**
@@ -66,7 +66,7 @@ abstract class sfTaskExtraAddon extends sfTaskExtraBaseTask
    */
   public function logSection($section, $message, $size = null, $style = 'INFO')
   {
-    is_null($this->wrappedTask) ? parent::logSection($section, $message, $size, $style) : $this->wrappedTask->logSection($section, $message, $size, $style);
+    null === $this->wrappedTask ? parent::logSection($section, $message, $size, $style) : $this->wrappedTask->logSection($section, $message, $size, $style);
   }
 
   /**

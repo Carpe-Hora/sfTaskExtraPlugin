@@ -254,12 +254,12 @@ EOF;
    */
   protected function buildContents($directory, sfFinder $finder = null, SimpleXMLElement $baseXml = null)
   {
-    if (is_null($finder))
+    if (null === $finder)
     {
       $finder = sfFinder::type('any')->maxdepth(0);
     }
 
-    if (is_null($baseXml))
+    if (null === $baseXml)
     {
       $baseXml = new SimpleXMLElement('<dir name="/"/>');
     }
@@ -284,7 +284,7 @@ EOF;
     $xml = $baseXml->asXml();
 
     // remove the xml declaration
-    list(, $xml) = preg_split('/[\r\n]+/', $xml, 2);
+    $xml = preg_replace('/^<\?xml.*[\r\n]+/', '', $xml);
 
     return $xml;
   }
@@ -296,7 +296,7 @@ EOF;
   {
     if ($this->interactive)
     {
-      return sfTaskExtraBaseTask::doAskAndValidate($this, $question, $validator, $options);
+      return parent::askAndValidate($question, $validator, $options);
     }
     else
     {
