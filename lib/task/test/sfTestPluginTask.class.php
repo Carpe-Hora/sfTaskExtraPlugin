@@ -13,7 +13,7 @@ require_once dirname(__FILE__).'/sfTaskExtraTestBaseTask.class.php';
 class sfTestPluginTask extends sfTaskExtraTestBaseTask
 {
   protected
-    $pluginPaths = array();
+    $plugins = array();
 
   /**
    * @see sfTask
@@ -49,11 +49,9 @@ EOF;
    */
   protected function execute($arguments = array(), $options = array())
   {
-    $this->pluginPaths = array();
     foreach ($arguments['plugin'] as $plugin)
     {
       $this->checkPluginExists($plugin);
-      $this->pluginPaths[] = $this->configuration->getPluginConfiguration($plugin)->getRootDir();
     }
 
     if ($options['only'] && !in_array($options['only'], array('unit', 'functional')))
@@ -62,6 +60,7 @@ EOF;
     }
 
     // use the test:* task but filter the files
+    $this->plugins = $arguments['plugin'];
     $this->dispatcher->connect('task.test.filter_test_files', array($this, 'filterTestFiles'));
 
     switch ($options['only'])
@@ -93,17 +92,12 @@ EOF;
    */
   public function filterTestFiles(sfEvent $event, $files)
   {
-    return array_filter($files, array($this, 'filterTestFilesCallback'));
-  }
-
-  protected function filterTestFilesCallback($file)
-  {
-    foreach ($this->pluginPaths as $pluginPath)
+    $filtered = array();
+    foreach ($this->plugins as $plugin)
     {
-      if (0 === strpos($file, $pluginPath))
-      {
-        return true;
-      }
+      $filtered = $this->configuration->getPluginConfiguration($plugin)->filterTestFiles($event, $filtered);
     }
+
+    return $filtered;
   }
 }
