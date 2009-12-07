@@ -40,6 +40,7 @@ class sfTaskExtraPluginConfiguration extends sfPluginConfiguration
     foreach ($names as $name)
     {
       $this->connectedPlugins[$name] = $this->configuration->getPluginConfiguration($name);
+      $this->connectedPlugins[$name]->connectTests();
     }
   }
 

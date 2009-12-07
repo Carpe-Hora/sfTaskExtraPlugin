@@ -2,7 +2,46 @@
 
 include dirname(__FILE__).'/../../bootstrap/unit.php';
 
-$t = new task_extra_lime_test(37, new lime_output_color());
+$t = new sfTaskExtraLimeTest(37);
+$t->configuration = $configuration;
+
+class sfTaskExtraGeneratorTasksCleanup
+{
+  protected $plugins;
+
+  public function __construct()
+  {
+    $this->plugins = $this->getPlugins();
+  }
+
+  public function __destruct()
+  {
+    $this->cleanup();
+  }
+
+  public function cleanup()
+  {
+    foreach (array_diff($this->getPlugins(), $this->plugins) as $dir)
+    {
+      sfToolkit::clearDirectory($dir);
+      rmdir($dir);
+    }
+
+    sfToolkit::clearDirectory(dirname(__FILE__).'/../../fixtures/project/test/unit');
+    foreach (glob(dirname(__FILE__).'/../../fixtures/project/plugins/*/test/unit/*') as $dir)
+    {
+      sfToolkit::clearDirectory($dir);
+      rmdir($dir);
+    }
+  }
+
+  protected function getPlugins()
+  {
+    return sfFinder::type('dir')->maxdepth(0)->in(dirname(__FILE__).'/../../fixtures/project/plugins');
+  }
+}
+$cleanup = new sfTaskExtraGeneratorTasksCleanup();
+$cleanup->cleanup();
 
 $t->diag('sfGeneratePluginTask');
 $t->task_ok('sfGeneratePluginTask', array('sfTest*Plugin'), array(), false, '"sfGeneratePluginTask" fails when plugin name includes bad characters');
@@ -56,13 +95,11 @@ $t->diag('sfGeneratePluginTask --skip-test-dir option');
 $t->task_ok('sfGeneratePluginTask', array('sfTestYetAgainPlugin'), array('--skip-test-dir', '--module=another'));
 $t->ok(!is_dir(sfConfig::get('sf_plugins_dir').'/sfTestYetAgainPlugin/test'), '"sfGeneratePluginTask" does not generate a test directory when "--skip-test-dir" is used');
 
-$t->diag('sfGenerateTestsTask');
-$t->task_ok('sfGenerateTestsTask', array(), array(), true);
-$t->ok(file_exists(sfConfig::get('sf_test_dir').'/unit/form/FormTest.php'), '"sfGenerateTestsTask" creates test files');
-
 $t->diag('sfGenerateTestTask');
 $t->task_ok('sfGenerateTestTask', array('Form'), array(), false, '"sfGenerateTestTask" fails if test script exists');
 $t->task_ok('sfGenerateTestTask', array('Form'), array('--force'), true, '"sfGenerateTestTask" succeeds with existing file and --force option');
-$t->like(@file_get_contents(sfConfig::get('sf_test_dir').'/unit/form/FormTest.php'), '/getWidgetSchema\(\)/', '"sfGenerateTestTask" detects appropriate template');
-$t->unlike(@file_get_contents(sfConfig::get('sf_test_dir').'/unit/form/FormTest.php'), '/__construct\(\)/', '"sfGenerateTestTask" detects appropriate template');
-$t->like(@file_get_contents(sfConfig::get('sf_test_dir').'/unit/util/ToolkitTest.php'), '/doXYZ\(\)/', '"sfGenerateTestTask" creates method test stubs');
+$t->ok(file_exists(sfConfig::get('sf_test_dir').'/unit/form/FormTest.php'), '"sfGenerateTestTask" generates a test file');
+$t->like(@file_get_contents(sfConfig::get('sf_test_dir').'/unit/form/FormTest.php'), '~'.preg_quote('dirname(__FILE__).\'/../../bootstrap/unit.php\'').'~', '"sfGenerateTestTask" includes a relative path to bootstrap');
+$t->task_ok('sfGenerateTestTask', array('StringToolkit'));
+$t->ok(file_exists(sfConfig::get('sf_plugins_dir').'/StandardPlugin/test/unit/util/string/StringToolkitTest.php'), '"sfGenerateTestTask" generates a plugin test');
+$t->like(@file_get_contents(sfConfig::get('sf_plugins_dir').'/StandardPlugin/test/unit/util/string/StringToolkitTest.php'), '~'.preg_quote('dirname(__FILE__).\'/../../../../../../test/bootstrap/unit.php\'').'~', '"sfGenerateTestTask" includes a relative path to the plugin bootstrap');

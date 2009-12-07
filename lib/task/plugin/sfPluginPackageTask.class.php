@@ -290,7 +290,7 @@ EOF;
   }
 
   /**
-   * @see sfTaskExtraBaseTask
+   * @see sfTask
    */
   public function askAndValidate($question, sfValidatorBase $validator, array $options = array())
   {

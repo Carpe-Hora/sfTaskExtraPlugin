@@ -142,6 +142,7 @@ EOF;
     {
       $moduleTask = new sfGeneratePluginModuleTask($this->dispatcher, $this->formatter);
       $moduleTask->setCommandApplication($this->commandApplication);
+      $moduleTask->setConfiguration($this->configuration);
       $moduleTask->run(array($plugin, $module));
     }
   }

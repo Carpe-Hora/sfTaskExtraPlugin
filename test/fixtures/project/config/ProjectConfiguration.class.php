@@ -8,11 +8,17 @@ if (!isset($_SERVER['SYMFONY']))
 require_once $_SERVER['SYMFONY'].'/autoload/sfCoreAutoload.class.php';
 sfCoreAutoload::register();
 
-class ProjectConfiguration extends sfProjectConfiguration
+class sfTaskExtraTestProjectConfiguration extends sfProjectConfiguration
 {
   public function setup()
   {
-    $this->setPlugins(array('sfTaskExtraPlugin'));
+    $this->setPlugins(array('sfTaskExtraPlugin', 'StandardPlugin', 'SpecialPlugin'));
     $this->setPluginPath('sfTaskExtraPlugin', dirname(__FILE__).'/../../../..');
+    $this->setPluginPath('SpecialPlugin', sfConfig::get('sf_data_dir').'/plugins/SpecialPlugin');
+  }
+
+  public function setupPlugins()
+  {
+    $this->enablePluginDevelopment('StandardPlugin');
   }
 }
