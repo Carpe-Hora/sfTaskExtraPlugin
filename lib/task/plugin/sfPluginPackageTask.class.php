@@ -261,7 +261,7 @@ EOF;
 
     if (is_null($baseXml))
     {
-      $baseXml = simplexml_load_string('<dir name="/"/>');
+      $baseXml = new SimpleXMLElement('<dir name="/"/>');
     }
 
     foreach ($finder->in($directory) as $entry)
