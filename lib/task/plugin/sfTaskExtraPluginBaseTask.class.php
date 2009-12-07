@@ -15,6 +15,6 @@ abstract class sfTaskExtraPluginBaseTask extends sfPluginBaseTask
    */
   public function checkPluginExists($plugin, $boolean = true)
   {
-    return sfTaskExtraBaseTask::checkPluginExists($plugin, $boolean);
+    return sfTaskExtraBaseTask::doCheckPluginExists($this, $plugin, $boolean);
   }
 }

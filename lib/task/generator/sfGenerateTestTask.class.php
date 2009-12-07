@@ -134,8 +134,7 @@ EOF;
     }
     else
     {
-      $pluginLibDirs = $this->configuration->getPluginConfiguration('sfTaskExtraPlugin')->getConnectedPluginSubPaths('/lib');
-      foreach ($pluginLibDirs as $pluginLibDir)
+      foreach ($this->configuration->getPluginSubPaths('/lib') as $pluginLibDir)
       {
         if (0 === strpos($path, $pluginLibDir))
         {

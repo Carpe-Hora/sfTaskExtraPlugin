@@ -21,9 +21,8 @@ class sfSubversionSetPropsTask extends sfTaskExtraSubversionBaseTask
       new sfCommandOption('with-svn', null, sfCommandOption::PARAMETER_REQUIRED, 'Subversion binary to use'),
     ));
 
-    $this->aliases = array('svn-setprops');
     $this->namespace = 'subversion';
-    $this->name = 'setprops';
+    $this->name = 'set-props';
 
     $this->briefDescription = 'Sets typical Subversion properties';
 
@@ -60,7 +59,6 @@ EOF;
       array('cache', 'data/sql', 'lib/model/om', 'lib/model/map', 'log', 'web/uploads')
     ));
 
-    $this->setSubversionProperty('svn:ignore', array('*transformed*', '*generated*'), 'config');
-    $this->setSubversionProperty('svn:ignore', 'frontend_dev.php', 'web');
+    $this->setSubversionProperty('svn:ignore', '*_dev.php', 'web');
   }
 }

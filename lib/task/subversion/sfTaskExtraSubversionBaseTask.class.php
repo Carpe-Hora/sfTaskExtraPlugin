@@ -17,7 +17,8 @@ abstract class sfTaskExtraSubversionBaseTask extends sfTaskExtraBaseTask
 
   protected function getStatus($path)
   {
-    $xml = simplexml_load_string($this->getFilesystem()->execute(sprintf('%s status --xml %s', $this->subversionBinary, escapeshellarg($path))));
+    list($out, $err) = $this->getFilesystem()->execute(sprintf('%s status --xml %s', $this->subversionBinary, escapeshellarg($path)));
+    $xml = new SimpleXMLElement($out);
     return (string) $xml->target->entry->{'wc-status'}['item'];
   }
 
@@ -43,7 +44,8 @@ abstract class sfTaskExtraSubversionBaseTask extends sfTaskExtraBaseTask
 
       foreach (glob($path.'/'.$value) as $entry)
       {
-        if (!in_array($this->getStatus($entry), array('unversioned', 'ignored')))
+        $status = $this->getStatus($entry);
+        if ($status && !in_array($status, array('unversioned', 'ignored')))
         {
           $this->getFilesystem()->execute(sprintf('%s rm --force %s', $this->subversionBinary, $entry));
         }

@@ -10,58 +10,58 @@ $task->setConfiguration($configuration);
 
 $t = new lime_test(5);
 
-// ::checkPluginExists()
-$t->diag('::checkPluginExists()');
+// ::doCheckPluginExists()
+$t->diag('::doCheckPluginExists()');
 
 try
 {
-  sfTaskExtraBaseTask::checkPluginExists($task, 'NonexistantPlugin');
-  $t->fail('::checkPluginExists() throws an exception if the plugin does not exist');
+  sfTaskExtraBaseTask::doCheckPluginExists($task, 'NonexistantPlugin');
+  $t->fail('::doCheckPluginExists() throws an exception if the plugin does not exist');
 }
 catch (Exception $e)
 {
-  $t->pass('::checkPluginExists() throws an exception if the plugin does not exist');
+  $t->pass('::doCheckPluginExists() throws an exception if the plugin does not exist');
 }
 
 try
 {
-  sfTaskExtraBaseTask::checkPluginExists($task, 'NonexistantPlugin', false);
-  $t->pass('::checkPluginExists() does not throw an excpetion if a plugin does not exists and is passed false');
+  sfTaskExtraBaseTask::doCheckPluginExists($task, 'NonexistantPlugin', false);
+  $t->pass('::doCheckPluginExists() does not throw an excpetion if a plugin does not exists and is passed false');
 }
 catch (Exception $e)
 {
-  $t->fail('::checkPluginExists() does not throw an excpetion if a plugin does not exists and is passed false');
+  $t->fail('::doCheckPluginExists() does not throw an excpetion if a plugin does not exists and is passed false');
   $t->diag('    '.$e->getMessage());
 }
 
 try
 {
-  sfTaskExtraBaseTask::checkPluginExists($task, 'StandardPlugin');
-  $t->pass('::checkPluginExists() does not throw an exception if a plugin exists');
+  sfTaskExtraBaseTask::doCheckPluginExists($task, 'StandardPlugin');
+  $t->pass('::doCheckPluginExists() does not throw an exception if a plugin exists');
 }
 catch (Exception $e)
 {
-  $t->fail('::checkPluginExists() does not throw an exception if a plugin exists');
+  $t->fail('::doCheckPluginExists() does not throw an exception if a plugin exists');
   $t->diag('    '.$e->getMessage());
 }
 
 try
 {
-  sfTaskExtraBaseTask::checkPluginExists($task, 'StandardPlugin', false);
-  $t->fail('::checkPluginExists() throws an exception if a plugin exists and is passed false');
+  sfTaskExtraBaseTask::doCheckPluginExists($task, 'StandardPlugin', false);
+  $t->fail('::doCheckPluginExists() throws an exception if a plugin exists and is passed false');
 }
 catch (Exception $e)
 {
-  $t->pass('::checkPluginExists() throws an exception if a plugin exists and is passed false');
+  $t->pass('::doCheckPluginExists() throws an exception if a plugin exists and is passed false');
 }
 
 try
 {
-  sfTaskExtraBaseTask::checkPluginExists($task, 'SpecialPlugin');
-  $t->pass('::checkPluginExists() does not throw a plugin is enabled with a special path');
+  sfTaskExtraBaseTask::doCheckPluginExists($task, 'SpecialPlugin');
+  $t->pass('::doCheckPluginExists() does not throw a plugin is enabled with a special path');
 }
 catch (Exception $e)
 {
-  $t->fail('::checkPluginExists() does not throw a plugin is enabled with a special path');
+  $t->fail('::doCheckPluginExists() does not throw a plugin is enabled with a special path');
   $t->diag('    '.$e->getMessage());
 }

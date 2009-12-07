@@ -15,6 +15,6 @@ abstract class sfTaskExtraGeneratorBaseTask extends sfGeneratorBaseTask
    */
   public function checkPluginExists($plugin, $boolean = true)
   {
-    sfTaskExtraBaseTask::checkPluginExists($this, $plugin, $boolean);
+    sfTaskExtraBaseTask::doCheckPluginExists($this, $plugin, $boolean);
   }
 }

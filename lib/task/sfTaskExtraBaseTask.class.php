@@ -11,6 +11,14 @@
 abstract class sfTaskExtraBaseTask extends sfBaseTask
 {
   /**
+   * @see doCheckPluginExists()
+   */
+  public function checkPluginExists($plugin, $boolean = true)
+  {
+    self::doCheckPluginExists($this, $plugin, $boolean);
+  }
+
+  /**
    * Checks if a plugin exists.
    * 
    * The plugin directory must exist and have at least one file or folder
@@ -21,7 +29,7 @@ abstract class sfTaskExtraBaseTask extends sfBaseTask
    * 
    * @throws  sfException If the plugin does not exist
    */
-  static public function checkPluginExists($task, $plugin, $boolean = true)
+  static public function doCheckPluginExists($task, $plugin, $boolean = true)
   {
     if (in_array($plugin, $task->configuration->getPlugins()))
     {
