@@ -1,6 +1,6 @@
 <?php
 
-class Form extends sfForm
+class Form extends BaseForm
 {
   public function __construct($defaults = array(), $options = array(), $CSRFSecret = false)
   {
