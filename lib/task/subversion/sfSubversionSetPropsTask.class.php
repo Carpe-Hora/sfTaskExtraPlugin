@@ -10,7 +10,7 @@ require_once dirname(__FILE__).'/sfTaskExtraSubversionBaseTask.class.php';
  * @author      Kris Wallsmith <kris.wallsmith@symfony-project.com>
  * @version     SVN: $Id$
  */
-class sfSubversionset-propsTask extends sfTaskExtraSubversionBaseTask
+class sfSubversionSetPropsTask extends sfTaskExtraSubversionBaseTask
 {
   /**
    * @see sfTask
