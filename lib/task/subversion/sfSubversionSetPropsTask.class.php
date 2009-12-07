@@ -10,7 +10,7 @@ require_once dirname(__FILE__).'/sfTaskExtraSubversionBaseTask.class.php';
  * @author      Kris Wallsmith <kris.wallsmith@symfony-project.com>
  * @version     SVN: $Id$
  */
-class sfSubversionSetPropsTask extends sfTaskExtraSubversionBaseTask
+class sfSubversionset-propsTask extends sfTaskExtraSubversionBaseTask
 {
   /**
    * @see sfTask
@@ -27,10 +27,10 @@ class sfSubversionSetPropsTask extends sfTaskExtraSubversionBaseTask
     $this->briefDescription = 'Sets typical Subversion properties';
 
     $this->detailedDescription = <<<EOF
-The [subversion:setprops|INFO] sets typical Subversion properties on your project
+The [subversion:set-props|INFO] sets typical Subversion properties on your project
 directories.
 
-  [./symfony subversion:setprops|INFO]
+  [./symfony subversion:set-props|INFO]
 
 This will set the [svn:ignore|COMMENT] property to [*|COMMENT] on the following directories:
 
@@ -40,7 +40,7 @@ This will set the [svn:ignore|COMMENT] property to [*|COMMENT] on the following 
 
 You can specify which svn binary to use with the [--with-svn|COMMENT] option:
 
-  [./symfony subversion:setprops --with-svn=/usr/local/bin/svn|INFO]
+  [./symfony subversion:set-props --with-svn=/path/to/svn|INFO]
 
 EOF;
   }
