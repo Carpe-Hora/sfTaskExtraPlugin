@@ -266,10 +266,15 @@ EOF;
 
     foreach ($finder->in($directory) as $entry)
     {
+      $name = basename($entry);
+      if ($name == 'package.xml')
+      {
+        continue;
+      }
       if (is_dir($entry))
       {
         $entryXml = $baseXml->addChild('dir');
-        $entryXml['name'] = basename($entry);
+        $entryXml['name'] = $name;
 
         $this->buildContents($entry, null, $entryXml);
       }
