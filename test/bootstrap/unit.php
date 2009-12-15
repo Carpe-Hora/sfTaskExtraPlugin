@@ -1,6 +1,11 @@
 <?php
 
-if (!isset($_SERVER['SYMFONY']))
+if(is_dir(dirname(__FILE__).'/../../../../lib/vendor/symfony/lib/'))
+{
+  $_SERVER['SYMFONY'] = realpath(dirname(__FILE__).'/../../../../lib/vendor/symfony/lib/');
+}
+
+if (!isset($_SERVER['SYMFONY']) || (isset($_SERVER['SYMFONY']) && !is_dir($_SERVER['SYMFONY'])))
 {
   throw new RuntimeException('Could not find symfony core libraries.');
 }
