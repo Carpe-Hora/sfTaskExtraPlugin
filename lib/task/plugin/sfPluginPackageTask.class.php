@@ -30,6 +30,8 @@ class sfPluginPackageTask extends sfTaskExtraPluginBaseTask
       new sfCommandOption('plugin-stability', null, sfCommandOption::PARAMETER_REQUIRED, 'The plugin stability'),
       new sfCommandOption('non-interactive', null, sfCommandOption::PARAMETER_NONE, 'Skip interactive prompts'),
       new sfCommandOption('nocompress', null, sfCommandOption::PARAMETER_NONE, 'Do not compress the package'),
+      new sfCommandOption('application', null, sfCommandOption::PARAMETER_OPTIONAL, 'The application name', true),
+      new sfCommandOption('env', null, sfCommandOption::PARAMETER_REQUIRED, 'The environment', 'dev'),
     ));
 
     $this->namespace = 'plugin';
@@ -167,17 +169,18 @@ EOF;
     $tokens = array(
       'PLUGIN_NAME'  => $arguments['plugin'],
       'CURRENT_DATE' => date('Y-m-d'),
+      'ENCODING'     => sfConfig::get('sf_charset'),
     );
 
     if (false !== strpos($template, '##SUMMARY##'))
     {
       $tokens['SUMMARY'] = $this->askAndValidate('Summarize your plugin in one line:', new sfValidatorCallback(array(
         'required' => true,
-        'callback' => create_function('$a, $b', 'return htmlentities($b);'),
+        'callback' => create_function('$a, $b', 'return htmlspecialchars($b, ENT_QUOTES, sfConfig::get(\'sf_charset\'));'),
       ), array(
         'required' => 'You must provide a summary of your plugin.',
       )), array(
-        'value'    => isset($properties['symfony']['author']) ? htmlentities($properties['symfony']['author']) : null,
+        'value'    => isset($properties['symfony']['author']) ? htmlspecialchars($properties['symfony']['author'], ENT_QUOTES, sfConfig::get('sf_charset')) : null,
       ));
     }
 
@@ -185,7 +188,7 @@ EOF;
     {
       $validator = new sfValidatorString(array(), array('required' => 'A lead developer name is required.'));
       $tokens['LEAD_NAME'] = $this->askAndValidate('Lead developer name:', $validator, array(
-        'value' => isset($properties['symfony']['author']) ? htmlentities($properties['symfony']['author']) : null,
+        'value' => isset($properties['symfony']['author']) ? htmlspecialchars($properties['symfony']['author'], ENT_QUOTES, sfConfig::get('sf_charset')) : null,
       ));
     }
 
@@ -193,7 +196,7 @@ EOF;
     {
       $validator = new sfValidatorEmail(array(), array('required' => 'A valid lead developer email address is required.', 'invalid' => '"%value%" is not a valid email address.'));
       $tokens['LEAD_EMAIL'] = $this->askAndValidate('Lead developer email:', $validator, array(
-        'value' => isset($properties['symfony']['email']) ? htmlentities($properties['symfony']['email']) : null,
+        'value' => isset($properties['symfony']['email']) ? htmlspecialchars($properties['symfony']['email'], ENT_QUOTES, sfConfig::get('sf_charset')) : null,
       ));
     }
 
@@ -201,7 +204,7 @@ EOF;
     {
       $validator = new sfValidatorString(array(), array('required' => 'A lead developer username is required.'));
       $tokens['LEAD_USERNAME'] = $this->askAndValidate('Lead developer username:', $validator, array(
-        'value' => isset($properties['symfony']['username']) ? htmlentities($properties['symfony']['username']) : null,
+        'value' => isset($properties['symfony']['username']) ? htmlspecialchars($properties['symfony']['username'], ENT_QUOTES, sfConfig::get('sf_charset')) : null,
       ));
     }
 
@@ -228,6 +231,7 @@ EOF;
 
     // remove those tokens that shouldn't be written to the template
     unset(
+      $tokens['ENCODING'],
       $tokens['CURRENT_DATE'],
       $tokens['PLUGIN_VERSION'],
       $tokens['API_VERSION'],
@@ -282,8 +286,10 @@ EOF;
     }
 
     // format using DOM to omit XML declaration
-    $dom = dom_import_simplexml($baseXml);
-    $xml = $dom->ownerDocument->saveXml($dom);
+    $domElement = dom_import_simplexml($baseXml);
+    $domDocument = $domElement->ownerDocument;
+    $domDocument->encoding = sfConfig::get('sf_charset');
+    $xml = $domDocument->saveXml($domElement);
 
     return $xml;
   }
