@@ -281,10 +281,9 @@ EOF;
       }
     }
 
-    $xml = $baseXml->asXml();
-
-    // remove the xml declaration
-    $xml = preg_replace('/^<\?xml.*[\r\n]+/', '', $xml);
+    // format using DOM to omit XML declaration
+    $dom = dom_import_simplexml($baseXml);
+    $xml = $dom->ownerDocument->saveXml($dom);
 
     return $xml;
   }
