@@ -20,7 +20,6 @@ class sfTaskExtraPluginConfiguration extends sfPluginConfiguration
   {
     $this->dispatcher->connect('configuration.method_not_found', array($this, 'listenForConfigurationMethodNotFound'));
 
-    // $this->dispatcher->connect('command.filter_options', array($this, 'filterCommandOptions'));
     $this->dispatcher->connect('command.pre_command', array($this, 'listenForPreCommand'));
     $this->dispatcher->connect('command.post_command', array($this, 'listenForPostCommand'));
   }
@@ -82,22 +81,6 @@ class sfTaskExtraPluginConfiguration extends sfPluginConfiguration
       call_user_func_array(array($this, 'connectPlugins'), $event['arguments']);
       return true;
     }
-  }
-
-  /**
-   * Filters command options.
-   * 
-   * @param   sfEvent $event
-   * @param   array   $options
-   * 
-   * @return  array
-   */
-  public function filterCommandOptions(sfEvent $event, $options)
-  {
-    $task = $event->getSubject();
-    $commandManager = $event['command_manager'];
-
-    return $options;
   }
 
   /**
