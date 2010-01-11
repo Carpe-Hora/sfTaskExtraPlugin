@@ -138,7 +138,13 @@ EOF;
       {
         if (0 === strpos($path, $pluginLibDir))
         {
-          return array($pluginLibDir, realpath($pluginLibDir.'/../test'));
+          // create the test directory before normalizing its path
+          if (!file_exists($testDir = $pluginLibDir.'/../test'))
+          {
+            $this->getFilesystem()->mkdirs($testDir);
+          }
+
+          return array($pluginLibDir, realpath($testDir));
         }
       }
     }
