@@ -77,9 +77,9 @@ abstract class sfTaskExtraSubversionBaseTask extends sfTaskExtraBaseTask
       $path = array($path);
     }
 
-    $file = sys_get_temp_dir().'sf_'.md5(rand(11111, 99999));
-    $this->getFilesystem()->touch($file);
-    file_put_contents($file, join(PHP_EOL, $value));
+    $file = tempnam(sys_get_temp_dir(), 'sf_');
+    $this->logSection('file+', $file);
+    file_put_contents($file, implode(PHP_EOL, $value));
 
     foreach ($path as $p)
     {

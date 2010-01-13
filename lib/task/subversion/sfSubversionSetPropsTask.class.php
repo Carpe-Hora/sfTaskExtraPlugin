@@ -35,13 +35,24 @@ directories.
 This will set the [svn:ignore|COMMENT] property to [*|COMMENT] on the following directories:
 
   cache/
+  data/sql
+  lib/form/doctrine/base
+  lib/form/doctrine/*/base
+  lib/filter/doctrine/base
+  lib/filter/doctrine/*/base
+  lib/model/doctrine/base
+  lib/model/doctrine/*/base
+  lib/model/om
+  lib/model/map
   log/
   web/uploads/
+
+Additionally, the [svn:ignore|COMMENT] property will be set to [*_dev.php|COMMENT]
+on the [web/|COMMENT] directory.
 
 You can specify which svn binary to use with the [--with-svn|COMMENT] option:
 
   [./symfony subversion:set-props --with-svn=/path/to/svn|INFO]
-
 EOF;
   }
 
@@ -53,9 +64,7 @@ EOF;
     $finder = sfFinder::type('dir')->name('base');
 
     $this->addIgnore(array_merge(
-      $finder->in('lib/form/doctrine'),
-      $finder->in('lib/filter/doctrine'),
-      $finder->in('lib/model/doctrine'),
+      $finder->in(array('lib/form/doctrine', 'lib/filter/doctrine', 'lib/model/doctrine')),
       array('cache', 'data/sql', 'lib/model/om', 'lib/model/map', 'log', 'web/uploads')
     ));
 
