@@ -10,6 +10,9 @@
  */
 class sfTaskExtraPluginConfiguration extends sfPluginConfiguration
 {
+  const
+    VERSION = '1.3.2';
+
   protected
     $connectedPlugins = array();
 
