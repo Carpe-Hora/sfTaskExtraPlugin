@@ -1,6 +1,9 @@
 <?php
 
-require_once dirname(__FILE__).'/../sfTaskExtraBaseTask.class.php';
+if (!in_array('sfDoctrinePlugin', sfProjectConfiguration::getActive()->getPlugins()))
+{
+  return false;
+}
 
 /**
  * Base Doctrine task.
@@ -12,4 +15,19 @@ require_once dirname(__FILE__).'/../sfTaskExtraBaseTask.class.php';
  */
 abstract class sfTaskExtraDoctrineBaseTask extends sfDoctrineBaseTask
 {
+  /**
+   * Loads all model classes and returns an array of model names.
+   * 
+   * @return array An array of model names
+   */
+  protected function loadModels()
+  {
+    Doctrine_Core::loadModels($this->configuration->getModelDirs());
+
+    $models = Doctrine_Core::getLoadedModels();
+    $models = Doctrine_Core::initializeModels($models);
+    $models = Doctrine_Core::filterInvalidModels($models);
+
+    return $models;
+  }
 }
