@@ -1,5 +1,11 @@
 <?php
 
+// try to include the command line argument symfony
+if (file_exists(dirname(__FILE__).'/sf_test_lib.inc'))
+{
+  include(dirname(__FILE__).'/sf_test_lib.inc');
+}
+
 if (!isset($app))
 {
   $app = '##APP_NAME##';
