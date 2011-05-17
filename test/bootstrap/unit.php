@@ -1,6 +1,12 @@
 <?php
 
-if(is_dir(dirname(__FILE__).'/../../../../lib/vendor/symfony/lib/'))
+// try to include the command line argument symfony
+if (file_exists(dirname(__FILE__).'/sf_test_lib.inc'))
+{
+  include(dirname(__FILE__).'/sf_test_lib.inc');
+}
+
+if (!isset($_SERVER['SYMFONY']) && is_dir(dirname(__FILE__).'/../../../../lib/vendor/symfony/lib/'))
 {
   $_SERVER['SYMFONY'] = realpath(dirname(__FILE__).'/../../../../lib/vendor/symfony/lib/');
 }
@@ -36,3 +42,9 @@ function task_extra_cleanup()
 }
 task_extra_cleanup();
 register_shutdown_function('task_extra_cleanup');
+
+// include test task
+$autoloader = sfSimpleAutoload::getInstance();
+$autoloader->addDirectory(dirname(dirname(dirname(__FILE__))));
+$autoloader->register();
+
