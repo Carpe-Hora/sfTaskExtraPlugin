@@ -108,6 +108,10 @@ EOF;
 
     // PluginConfiguration
     $this->getFilesystem()->rename($pluginDir.'/config/PluginConfiguration.class.php', $pluginDir.'/config/'.$plugin.'Configuration.class.php');
+    // PluginRouting
+    $this->getFilesystem()->rename($pluginDir.'/lib/routing/PluginRouting.class.php', $pluginDir.'/lib/routing/'.$plugin.'Routing.class.php');
+    // PluginUser
+    $this->getFilesystem()->rename($pluginDir.'/lib/user/PluginUser.class.php', $pluginDir.'/lib/user/'.$plugin.'User.class.php');
 
     // tokens
     $finder = sfFinder::type('file')->name('*.php', '*.yml', 'package.xml.tmpl');

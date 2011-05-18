@@ -17,5 +17,12 @@ class ##PLUGIN_NAME##Configuration extends sfPluginConfiguration
    */
   public function initialize()
   {
+    $this->dispatcher->connect(
+        'user.method_not_found', 
+        array('##PLUGIN_NAME##User', 'methodNotFound'));
+
+    $this->dispatcher->connect(
+        'routing.load_configuration', 
+        array('##PLUGIN_NAME##Routing', 'listenToRoutingLoadConfigurationEvent'));
   }
 }
