@@ -23,7 +23,7 @@ class ##PLUGIN_NAME##Routing
   {
     foreach (array(/* list your modules here */) as $module)
     {
-      if(in_array($module, sfConfig::get('sf_enabled_modules')))
+      if (in_array($module, sfConfig::get('sf_enabled_modules')))
       {
         call_user_func(array('##PLUGIN_NAME##Routing',sprintf('prepend%sRoutes', ucfirst($module))), $event->getSubject());
       }

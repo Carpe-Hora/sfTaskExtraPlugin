@@ -23,7 +23,7 @@ class ##PLUGIN_NAME##User
    */
   public static function methodNotFound(sfEvent $event)
   {
-    if(method_exists('##PLUGIN_NAME##User', $event['method']))
+    if (method_exists('##PLUGIN_NAME##User', $event['method']))
     {
       $event->setReturnValue(call_user_func_array(
         array('##PLUGIN_NAME##User', $event['method']),
